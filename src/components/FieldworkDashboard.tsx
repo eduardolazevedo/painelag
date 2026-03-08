@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Users, Clock, TrendingUp, AlertTriangle, CheckCircle2, BarChart3, RefreshCw } from "lucide-react";
+import { Loader2, Users, Clock, TrendingUp, AlertTriangle, CheckCircle2, BarChart3, RefreshCw, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 
 interface SurveyFieldwork {
@@ -20,13 +21,27 @@ interface SurveyFieldwork {
 }
 
 export default function FieldworkDashboard() {
+  const { user } = useAuth();
   const [surveys, setSurveys] = useState<SurveyFieldwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
-    loadFieldwork();
-  }, []);
+    checkAccess();
+  }, [user]);
+
+  const checkAccess = async () => {
+    if (!user) { setAuthorized(false); setLoading(false); return; }
+    const [adminRes, analystRes] = await Promise.all([
+      supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }),
+      supabase.rpc("has_role", { _user_id: user.id, _role: "analyst" }),
+    ]);
+    const allowed = adminRes.data === true || analystRes.data === true;
+    setAuthorized(allowed);
+    if (allowed) loadFieldwork();
+    else setLoading(false);
+  };
 
   const loadFieldwork = async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
@@ -106,10 +121,20 @@ export default function FieldworkDashboard() {
     if (showRefresh) toast.success("Dados atualizados");
   };
 
-  if (loading) {
+  if (loading || authorized === null) {
     return (
       <div className="flex items-center justify-center min-h-[40vh]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[40vh] text-center space-y-3">
+        <ShieldAlert className="h-12 w-12 text-destructive" />
+        <h3 className="text-lg font-semibold">Acesso restrito</h3>
+        <p className="text-muted-foreground text-sm">Esta página é exclusiva para administradores e analistas.</p>
       </div>
     );
   }
