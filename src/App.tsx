@@ -4,20 +4,44 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import AuthPage from "@/components/AuthPage";
+import DemographicOnboarding from "@/components/DemographicOnboarding";
 import AppHeader from "@/components/AppHeader";
 import Home from "./pages/Home";
 import SurveyPage from "./pages/SurveyPage";
 import SuggestPage from "./pages/SuggestPage";
 import ResultsPage from "./pages/ResultsPage";
+import FieldworkPage from "./pages/FieldworkPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const [profileComplete, setProfileComplete] = useState<boolean | null>(null);
 
-  if (loading) {
+  useEffect(() => {
+    if (user) checkProfile();
+    else setProfileComplete(null);
+  }, [user]);
+
+  const checkProfile = async () => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("gender, birth_year, education_level, income_bracket, municipality")
+      .eq("user_id", user!.id)
+      .single();
+
+    if (data && data.gender && data.birth_year && data.education_level && data.income_bracket && data.municipality) {
+      setProfileComplete(true);
+    } else {
+      setProfileComplete(false);
+    }
+  };
+
+  if (loading || (user && profileComplete === null)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center space-y-3">
@@ -32,6 +56,10 @@ function AppContent() {
     return <AuthPage />;
   }
 
+  if (profileComplete === false) {
+    return <DemographicOnboarding onComplete={() => setProfileComplete(true)} />;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <AppHeader />
@@ -40,6 +68,7 @@ function AppContent() {
         <Route path="/enquete/:id" element={<SurveyPage />} />
         <Route path="/sugerir" element={<SuggestPage />} />
         <Route path="/resultados" element={<ResultsPage />} />
+        <Route path="/campo" element={<FieldworkPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
