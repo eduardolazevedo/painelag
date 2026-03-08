@@ -15,6 +15,7 @@ export default function AppHeader() {
     { path: "/campo", label: "Campo", icon: Activity },
     { path: "/analise", label: "Análise", icon: TrendingUp },
     { path: "/admin", label: "Admin", icon: Shield },
+    { path: "/templates", label: "Templates", icon: CalendarClock },
     { path: "/widgets", label: "Widgets", icon: Layout },
   ];
 
