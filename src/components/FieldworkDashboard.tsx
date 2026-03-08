@@ -121,10 +121,20 @@ export default function FieldworkDashboard() {
     if (showRefresh) toast.success("Dados atualizados");
   };
 
-  if (loading) {
+  if (loading || authorized === null) {
     return (
       <div className="flex items-center justify-center min-h-[40vh]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[40vh] text-center space-y-3">
+        <ShieldAlert className="h-12 w-12 text-destructive" />
+        <h3 className="text-lg font-semibold">Acesso restrito</h3>
+        <p className="text-muted-foreground text-sm">Esta página é exclusiva para administradores e analistas.</p>
       </div>
     );
   }
