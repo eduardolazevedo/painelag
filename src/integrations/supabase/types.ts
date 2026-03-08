@@ -14,16 +14,369 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      demographic_weights: {
+        Row: {
+          category: string
+          census_proportion: number
+          dimension: string
+          id: string
+          panel_proportion: number | null
+          reference_source: string | null
+          updated_at: string
+          weight: number | null
+        }
+        Insert: {
+          category: string
+          census_proportion: number
+          dimension: string
+          id?: string
+          panel_proportion?: number | null
+          reference_source?: string | null
+          updated_at?: string
+          weight?: number | null
+        }
+        Update: {
+          category?: string
+          census_proportion?: number
+          dimension?: string
+          id?: string
+          panel_proportion?: number | null
+          reference_source?: string | null
+          updated_at?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          birth_year: number | null
+          created_at: string
+          display_name: string | null
+          education_level: string | null
+          gender: string | null
+          id: string
+          income_bracket: string | null
+          municipality: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          birth_year?: number | null
+          created_at?: string
+          display_name?: string | null
+          education_level?: string | null
+          gender?: string | null
+          id?: string
+          income_bracket?: string | null
+          municipality?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          birth_year?: number | null
+          created_at?: string
+          display_name?: string | null
+          education_level?: string | null
+          gender?: string | null
+          id?: string
+          income_bracket?: string | null
+          municipality?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      question_options: {
+        Row: {
+          display_order: number
+          id: string
+          option_text: string
+          question_id: string
+          value: string | null
+        }
+        Insert: {
+          display_order?: number
+          id?: string
+          option_text: string
+          question_id: string
+          value?: string | null
+        }
+        Update: {
+          display_order?: number
+          id?: string
+          option_text?: string
+          question_id?: string
+          value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          config: Json | null
+          created_at: string
+          display_order: number
+          id: string
+          is_required: boolean | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          survey_id: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_required?: boolean | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          survey_id: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_required?: boolean | null
+          question_text?: string
+          question_type?: Database["public"]["Enums"]["question_type"]
+          survey_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      response_answers: {
+        Row: {
+          answered_at: string
+          id: string
+          numeric_value: number | null
+          question_id: string
+          ranking_order: string[] | null
+          response_id: string
+          selected_option_id: string | null
+          selected_option_ids: string[] | null
+          text_value: string | null
+        }
+        Insert: {
+          answered_at?: string
+          id?: string
+          numeric_value?: number | null
+          question_id: string
+          ranking_order?: string[] | null
+          response_id: string
+          selected_option_id?: string | null
+          selected_option_ids?: string[] | null
+          text_value?: string | null
+        }
+        Update: {
+          answered_at?: string
+          id?: string
+          numeric_value?: number | null
+          question_id?: string
+          ranking_order?: string[] | null
+          response_id?: string
+          selected_option_id?: string | null
+          selected_option_ids?: string[] | null
+          text_value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "response_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "response_answers_response_id_fkey"
+            columns: ["response_id"]
+            isOneToOne: false
+            referencedRelation: "responses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "response_answers_selected_option_id_fkey"
+            columns: ["selected_option_id"]
+            isOneToOne: false
+            referencedRelation: "question_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      responses: {
+        Row: {
+          completed_at: string | null
+          duration_seconds: number | null
+          id: string
+          started_at: string
+          survey_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          started_at?: string
+          survey_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          started_at?: string
+          survey_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "responses_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_suggestions: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          status: string | null
+          title: string
+          upvotes: number | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          status?: string | null
+          title: string
+          upvotes?: number | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          status?: string | null
+          title?: string
+          upvotes?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      surveys: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          ends_at: string | null
+          estimated_duration_minutes: number | null
+          id: string
+          is_public_results: boolean | null
+          starts_at: string | null
+          status: Database["public"]["Enums"]["survey_status"]
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          is_public_results?: boolean | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["survey_status"]
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          is_public_results?: boolean | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["survey_status"]
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "editor" | "analyst" | "panelist"
+      question_type:
+        | "multiple_choice_single"
+        | "multiple_choice_multiple"
+        | "likert"
+        | "nps"
+        | "ranking"
+        | "open_text"
+      survey_status: "draft" | "active" | "closed" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +503,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "editor", "analyst", "panelist"],
+      question_type: [
+        "multiple_choice_single",
+        "multiple_choice_multiple",
+        "likert",
+        "nps",
+        "ranking",
+        "open_text",
+      ],
+      survey_status: ["draft", "active", "closed", "archived"],
+    },
   },
 } as const
