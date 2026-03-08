@@ -1,6 +1,6 @@
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { LogOut, BarChart3, MessageSquarePlus, LayoutDashboard, Activity } from "lucide-react";
+import { LogOut, BarChart3, MessageSquarePlus, LayoutDashboard, Activity, Shield, TrendingUp } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AppHeader() {
@@ -13,6 +13,8 @@ export default function AppHeader() {
     { path: "/sugerir", label: "Sugerir Pauta", icon: MessageSquarePlus },
     { path: "/resultados", label: "Resultados", icon: LayoutDashboard },
     { path: "/campo", label: "Campo", icon: Activity },
+    { path: "/analise", label: "Análise", icon: TrendingUp },
+    { path: "/admin", label: "Admin", icon: Shield },
   ];
 
   return (
