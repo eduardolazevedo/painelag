@@ -21,13 +21,27 @@ interface SurveyFieldwork {
 }
 
 export default function FieldworkDashboard() {
+  const { user } = useAuth();
   const [surveys, setSurveys] = useState<SurveyFieldwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
-    loadFieldwork();
-  }, []);
+    checkAccess();
+  }, [user]);
+
+  const checkAccess = async () => {
+    if (!user) { setAuthorized(false); setLoading(false); return; }
+    const [adminRes, analystRes] = await Promise.all([
+      supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }),
+      supabase.rpc("has_role", { _user_id: user.id, _role: "analyst" }),
+    ]);
+    const allowed = adminRes.data === true || analystRes.data === true;
+    setAuthorized(allowed);
+    if (allowed) loadFieldwork();
+    else setLoading(false);
+  };
 
   const loadFieldwork = async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
