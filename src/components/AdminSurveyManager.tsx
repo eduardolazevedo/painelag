@@ -524,6 +524,11 @@ function SurveyDetail({ survey, questions, onStatusChange, onQuestionsChange, on
             </div>
           </div>
         )}
+
+        {/* Quota management */}
+        <div className="border-t pt-4">
+          <QuotaManager surveyId={survey.id} />
+        </div>
       </CardContent>
     </Card>
   );

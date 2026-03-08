@@ -102,6 +102,18 @@ export default function SurveyResponse() {
     const durationSeconds = Math.round((Date.now() - startTimeRef.current) / 1000);
 
     try {
+      // Check quotas before creating response
+      const { data: quotaCheck } = await supabase.rpc("check_and_update_quota", {
+        p_survey_id: surveyId,
+        p_user_id: user.id,
+      });
+      const quotaResult = quotaCheck as unknown as { allowed: boolean; reason?: string };
+      if (quotaResult && !quotaResult.allowed) {
+        toast.error("A quota demográfica para o seu perfil já foi atingida nesta enquete.");
+        setSubmitting(false);
+        return;
+      }
+
       const { data: response, error: respError } = await supabase
         .from("responses")
         .insert({ survey_id: surveyId, user_id: user.id, duration_seconds: durationSeconds })
