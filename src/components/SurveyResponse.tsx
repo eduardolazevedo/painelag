@@ -136,7 +136,7 @@ export default function SurveyResponse() {
       toast.success("Obrigado pela sua participação!");
       navigate("/");
     } catch (err: any) {
-      toast.error(err.message || "Erro ao enviar respostas");
+      toast.error(getErrorMessage(err));
     } finally {
       setSubmitting(false);
     }

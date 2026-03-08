@@ -27,7 +27,7 @@ export default function AuthPage() {
         toast.success("Conta criada! Verifique seu e-mail.");
       }
     } catch (err: any) {
-      toast.error(err.message || "Erro ao autenticar");
+      toast.error(getErrorMessage(err, 'auth'));
     } finally {
       setLoading(false);
     }

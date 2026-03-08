@@ -41,7 +41,7 @@ export default function SuggestTopic() {
       setDescription("");
       setCategory("");
     } catch (err: any) {
-      toast.error(err.message || "Erro ao enviar sugestão");
+      toast.error(getErrorMessage(err));
     } finally {
       setSubmitting(false);
     }
