@@ -25,6 +25,7 @@ interface WeightingResult {
   effective_n: number;
   margin_of_error_95: number;
   max_change: number;
+  error?: string;
 }
 
 interface QuestionResult {
