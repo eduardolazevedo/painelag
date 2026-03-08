@@ -13,6 +13,8 @@ export default function AppHeader() {
     { path: "/sugerir", label: "Sugerir Pauta", icon: MessageSquarePlus },
     { path: "/resultados", label: "Resultados", icon: LayoutDashboard },
     { path: "/campo", label: "Campo", icon: Activity },
+    { path: "/analise", label: "Análise", icon: TrendingUp },
+    { path: "/admin", label: "Admin", icon: Shield },
   ];
 
   return (

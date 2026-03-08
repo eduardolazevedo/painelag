@@ -71,6 +71,8 @@ function AppContent() {
         <Route path="/sugerir" element={<SuggestPage />} />
         <Route path="/resultados" element={<ResultsPage />} />
         <Route path="/campo" element={<FieldworkPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/analise" element={<WeightedResultsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
