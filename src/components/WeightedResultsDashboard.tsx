@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { Loader2, BarChart3, TrendingUp, AlertTriangle, Download, RefreshCw, Users, Target, Activity } from "lucide-react";
 import { toast } from "sonner";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, ErrorBar } from "recharts";
+import CrossTabulation from "@/components/CrossTabulation";
 
 const COLORS = [
   "hsl(224, 67%, 33%)", "hsl(346, 58%, 58%)", "hsl(42, 85%, 55%)",
