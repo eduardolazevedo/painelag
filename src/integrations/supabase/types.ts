@@ -374,6 +374,66 @@ export type Database = {
         }
         Relationships: []
       }
+      survey_templates: {
+        Row: {
+          auto_close_after_hours: number | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          estimated_duration_minutes: number | null
+          id: string
+          is_active: boolean | null
+          is_public_results: boolean | null
+          last_generated_at: string | null
+          minimum_duration_seconds: number | null
+          next_generation_at: string | null
+          recurrence_day_of_month: number | null
+          recurrence_day_of_week: number | null
+          recurrence_type: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          auto_close_after_hours?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_public_results?: boolean | null
+          last_generated_at?: string | null
+          minimum_duration_seconds?: number | null
+          next_generation_at?: string | null
+          recurrence_day_of_month?: number | null
+          recurrence_day_of_week?: number | null
+          recurrence_type?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          auto_close_after_hours?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_public_results?: boolean | null
+          last_generated_at?: string | null
+          minimum_duration_seconds?: number | null
+          next_generation_at?: string | null
+          recurrence_day_of_month?: number | null
+          recurrence_day_of_week?: number | null
+          recurrence_type?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       surveys: {
         Row: {
           created_at: string
@@ -421,6 +481,76 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      template_question_options: {
+        Row: {
+          display_order: number
+          id: string
+          option_text: string
+          question_id: string
+          value: string | null
+        }
+        Insert: {
+          display_order?: number
+          id?: string
+          option_text: string
+          question_id: string
+          value?: string | null
+        }
+        Update: {
+          display_order?: number
+          id?: string
+          option_text?: string
+          question_id?: string
+          value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "template_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_questions: {
+        Row: {
+          config: Json | null
+          display_order: number
+          id: string
+          is_required: boolean | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          template_id: string
+        }
+        Insert: {
+          config?: Json | null
+          display_order?: number
+          id?: string
+          is_required?: boolean | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          template_id: string
+        }
+        Update: {
+          config?: Json | null
+          display_order?: number
+          id?: string
+          is_required?: boolean | null
+          question_text?: string
+          question_type?: Database["public"]["Enums"]["question_type"]
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_questions_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "survey_templates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
