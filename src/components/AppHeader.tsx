@@ -1,6 +1,6 @@
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { LogOut, BarChart3, MessageSquarePlus, LayoutDashboard, Activity, Shield, TrendingUp } from "lucide-react";
+import { LogOut, BarChart3, MessageSquarePlus, LayoutDashboard, Activity, Shield, TrendingUp, Layout } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AppHeader() {
