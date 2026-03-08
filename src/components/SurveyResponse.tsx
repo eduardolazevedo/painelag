@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getErrorMessage } from "@/lib/errorMessages";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -136,7 +137,7 @@ export default function SurveyResponse() {
       toast.success("Obrigado pela sua participação!");
       navigate("/");
     } catch (err: any) {
-      toast.error(err.message || "Erro ao enviar respostas");
+      toast.error(getErrorMessage(err));
     } finally {
       setSubmitting(false);
     }

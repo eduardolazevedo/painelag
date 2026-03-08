@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getErrorMessage } from "@/lib/errorMessages";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +28,7 @@ export default function AuthPage() {
         toast.success("Conta criada! Verifique seu e-mail.");
       }
     } catch (err: any) {
-      toast.error(err.message || "Erro ao autenticar");
+      toast.error(getErrorMessage(err, 'auth'));
     } finally {
       setLoading(false);
     }
