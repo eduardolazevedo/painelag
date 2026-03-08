@@ -228,6 +228,9 @@ export type Database = {
           completed_at: string | null
           duration_seconds: number | null
           id: string
+          is_valid: boolean | null
+          quality_flags: string[] | null
+          quality_score: number | null
           started_at: string
           survey_id: string
           user_id: string
@@ -236,6 +239,9 @@ export type Database = {
           completed_at?: string | null
           duration_seconds?: number | null
           id?: string
+          is_valid?: boolean | null
+          quality_flags?: string[] | null
+          quality_score?: number | null
           started_at?: string
           survey_id: string
           user_id: string
@@ -244,6 +250,9 @@ export type Database = {
           completed_at?: string | null
           duration_seconds?: number | null
           id?: string
+          is_valid?: boolean | null
+          quality_flags?: string[] | null
+          quality_score?: number | null
           started_at?: string
           survey_id?: string
           user_id?: string
@@ -300,6 +309,7 @@ export type Database = {
           estimated_duration_minutes: number | null
           id: string
           is_public_results: boolean | null
+          minimum_duration_seconds: number | null
           starts_at: string | null
           status: Database["public"]["Enums"]["survey_status"]
           tags: string[] | null
@@ -314,6 +324,7 @@ export type Database = {
           estimated_duration_minutes?: number | null
           id?: string
           is_public_results?: boolean | null
+          minimum_duration_seconds?: number | null
           starts_at?: string | null
           status?: Database["public"]["Enums"]["survey_status"]
           tags?: string[] | null
@@ -328,6 +339,7 @@ export type Database = {
           estimated_duration_minutes?: number | null
           id?: string
           is_public_results?: boolean | null
+          minimum_duration_seconds?: number | null
           starts_at?: string | null
           status?: Database["public"]["Enums"]["survey_status"]
           tags?: string[] | null
@@ -359,6 +371,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_raking_weights: {
+        Args: {
+          p_convergence_threshold?: number
+          p_max_iterations?: number
+          p_max_weight?: number
+          p_survey_id: string
+        }
+        Returns: Json
+      }
+      calculate_response_quality: {
+        Args: { p_response_id: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

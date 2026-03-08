@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getErrorMessage } from "@/lib/errorMessages";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,10 +40,12 @@ export default function SurveyResponse() {
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const startTimeRef = useRef<number>(Date.now());
 
   useEffect(() => {
     if (!surveyId) return;
     loadSurvey();
+    startTimeRef.current = Date.now();
   }, [surveyId]);
 
   const loadSurvey = async () => {
@@ -61,7 +63,6 @@ export default function SurveyResponse() {
     setSurvey(surveyRes.data);
 
     const qs = questionsRes.data || [];
-    // Load options for each question
     const questionIds = qs.map((q) => q.id);
     const { data: options } = await supabase
       .from("question_options")
@@ -87,19 +88,28 @@ export default function SurveyResponse() {
 
   const handleSubmit = async () => {
     if (!user || !surveyId) return;
+
+    // Check required answers
+    const missing = questions.filter((q) => q.is_required && (answers[q.id] === undefined || answers[q.id] === null || answers[q.id] === ""));
+    if (missing.length > 0) {
+      toast.error(`Responda todas as perguntas obrigatórias (${missing.length} pendente${missing.length > 1 ? "s" : ""})`);
+      const firstMissing = questions.indexOf(missing[0]);
+      setCurrentIndex(firstMissing);
+      return;
+    }
+
     setSubmitting(true);
+    const durationSeconds = Math.round((Date.now() - startTimeRef.current) / 1000);
 
     try {
-      // Create response
       const { data: response, error: respError } = await supabase
         .from("responses")
-        .insert({ survey_id: surveyId, user_id: user.id })
+        .insert({ survey_id: surveyId, user_id: user.id, duration_seconds: durationSeconds })
         .select()
         .single();
 
       if (respError) throw respError;
 
-      // Insert all answers
       const answerRows = questions.map((q) => {
         const ans = answers[q.id];
         const row: any = { response_id: response.id, question_id: q.id };
@@ -133,6 +143,9 @@ export default function SurveyResponse() {
         .from("responses")
         .update({ completed_at: new Date().toISOString() })
         .eq("id", response.id);
+
+      // Trigger quality check (fire-and-forget via RPC)
+      supabase.rpc("calculate_response_quality", { p_response_id: response.id }).then(() => {});
 
       toast.success("Obrigado pela sua participação!");
       navigate("/");
