@@ -16,6 +16,7 @@ import ResultsPage from "./pages/ResultsPage";
 import FieldworkPage from "./pages/FieldworkPage";
 import AdminPage from "./pages/AdminPage";
 import WeightedResultsPage from "./pages/WeightedResultsPage";
+import WidgetDemoPage from "./pages/WidgetDemoPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -73,6 +74,7 @@ function AppContent() {
         <Route path="/campo" element={<FieldworkPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/analise" element={<WeightedResultsPage />} />
+        <Route path="/widgets" element={<WidgetDemoPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
