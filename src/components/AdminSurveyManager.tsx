@@ -17,6 +17,7 @@ import {
   BarChart3, Users, AlertTriangle, Settings
 } from "lucide-react";
 import { toast } from "sonner";
+import QuotaManager from "@/components/QuotaManager";
 
 type QuestionType = "multiple_choice_single" | "multiple_choice_multiple" | "likert" | "nps" | "ranking" | "open_text";
 type SurveyStatus = "draft" | "active" | "closed" | "archived";
