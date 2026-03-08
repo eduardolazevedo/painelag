@@ -375,7 +375,12 @@ function QuestionResultCard({ result, moe, effectiveN }: { result: QuestionResul
                 </span>
                 <span className="text-muted-foreground">
                   {(result.weighted_pcts[o.id] || 0).toFixed(1)}%
-                  <span className="text-xs ml-1">({result.raw_counts[o.id] || 0})</span>
+                  <span className="text-xs ml-1">
+                    ±{(() => {
+                      const p = (result.weighted_pcts[o.id] || 0) / 100;
+                      return effectiveN > 0 ? (1.96 * Math.sqrt((p * (1 - p)) / effectiveN) * 100).toFixed(1) : "—";
+                    })()}pp ({result.raw_counts[o.id] || 0})
+                  </span>
                 </span>
               </div>
             ))}
