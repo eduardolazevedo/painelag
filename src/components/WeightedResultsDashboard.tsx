@@ -314,13 +314,21 @@ function QuestionResultCard({ result, moe, effectiveN }: { result: QuestionResul
   const isNumeric = result.question_type === "likert" || result.question_type === "nps";
 
   if (isChoice && result.options.length > 0) {
-    const chartData = result.options.map((o, i) => ({
-      name: o.text.length > 25 ? o.text.slice(0, 22) + "..." : o.text,
-      fullName: o.text,
-      bruto: parseFloat((result.raw_pcts[o.id] || 0).toFixed(1)),
-      ponderado: parseFloat((result.weighted_pcts[o.id] || 0).toFixed(1)),
-      count: result.raw_counts[o.id] || 0,
-    }));
+    const chartData = result.options.map((o, i) => {
+      const p = (result.weighted_pcts[o.id] || 0) / 100;
+      // Wilson CI for proportion
+      const ci = effectiveN > 0
+        ? 1.96 * Math.sqrt((p * (1 - p)) / effectiveN) * 100
+        : 0;
+      return {
+        name: o.text.length > 25 ? o.text.slice(0, 22) + "..." : o.text,
+        fullName: o.text,
+        bruto: parseFloat((result.raw_pcts[o.id] || 0).toFixed(1)),
+        ponderado: parseFloat((result.weighted_pcts[o.id] || 0).toFixed(1)),
+        ci: parseFloat(ci.toFixed(1)),
+        count: result.raw_counts[o.id] || 0,
+      };
+    });
 
     return (
       <Card className="border-0 shadow-card animate-fade-in">
