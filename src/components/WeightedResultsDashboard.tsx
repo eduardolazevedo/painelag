@@ -309,7 +309,7 @@ function StatCard({ icon: Icon, label, value, highlight, color }: {
   );
 }
 
-function QuestionResultCard({ result, moe }: { result: QuestionResult; moe: number }) {
+function QuestionResultCard({ result, moe, effectiveN }: { result: QuestionResult; moe: number; effectiveN: number }) {
   const isChoice = result.question_type === "multiple_choice_single" || result.question_type === "multiple_choice_multiple";
   const isNumeric = result.question_type === "likert" || result.question_type === "nps";
 
