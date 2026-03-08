@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { Loader2, BarChart3, TrendingUp, AlertTriangle, Download, RefreshCw, Users, Target, Activity } from "lucide-react";
 import { toast } from "sonner";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, ErrorBar } from "recharts";
+import CrossTabulation from "@/components/CrossTabulation";
 
 const COLORS = [
   "hsl(224, 67%, 33%)", "hsl(346, 58%, 58%)", "hsl(42, 85%, 55%)",
@@ -277,7 +278,17 @@ export default function WeightedResultsDashboard() {
 
           {/* Question results */}
           {results.map(r => (
-            <QuestionResultCard key={r.question_id} result={r} moe={weighting.margin_of_error_95} />
+            <div key={r.question_id} className="space-y-2">
+              <QuestionResultCard result={r} moe={weighting.margin_of_error_95} effectiveN={weighting.effective_n} />
+              {r.question_type === "multiple_choice_single" && (
+                <CrossTabulation
+                  surveyId={selectedSurveyId}
+                  questionId={r.question_id}
+                  questionText={r.question_text}
+                  weights={weighting.weights}
+                />
+              )}
+            </div>
           ))}
         </>
       )}
@@ -308,18 +319,26 @@ function StatCard({ icon: Icon, label, value, highlight, color }: {
   );
 }
 
-function QuestionResultCard({ result, moe }: { result: QuestionResult; moe: number }) {
+function QuestionResultCard({ result, moe, effectiveN }: { result: QuestionResult; moe: number; effectiveN: number }) {
   const isChoice = result.question_type === "multiple_choice_single" || result.question_type === "multiple_choice_multiple";
   const isNumeric = result.question_type === "likert" || result.question_type === "nps";
 
   if (isChoice && result.options.length > 0) {
-    const chartData = result.options.map((o, i) => ({
-      name: o.text.length > 25 ? o.text.slice(0, 22) + "..." : o.text,
-      fullName: o.text,
-      bruto: parseFloat((result.raw_pcts[o.id] || 0).toFixed(1)),
-      ponderado: parseFloat((result.weighted_pcts[o.id] || 0).toFixed(1)),
-      count: result.raw_counts[o.id] || 0,
-    }));
+    const chartData = result.options.map((o, i) => {
+      const p = (result.weighted_pcts[o.id] || 0) / 100;
+      // Wilson CI for proportion
+      const ci = effectiveN > 0
+        ? 1.96 * Math.sqrt((p * (1 - p)) / effectiveN) * 100
+        : 0;
+      return {
+        name: o.text.length > 25 ? o.text.slice(0, 22) + "..." : o.text,
+        fullName: o.text,
+        bruto: parseFloat((result.raw_pcts[o.id] || 0).toFixed(1)),
+        ponderado: parseFloat((result.weighted_pcts[o.id] || 0).toFixed(1)),
+        ci: parseFloat(ci.toFixed(1)),
+        count: result.raw_counts[o.id] || 0,
+      };
+    });
 
     return (
       <Card className="border-0 shadow-card animate-fade-in">
@@ -341,7 +360,9 @@ function QuestionResultCard({ result, moe }: { result: QuestionResult; moe: numb
                   labelFormatter={(label: string, payload: any[]) => payload?.[0]?.payload?.fullName || label}
                 />
                 <Bar dataKey="bruto" fill="hsl(224, 60%, 50%)" opacity={0.4} name="bruto" radius={[0, 2, 2, 0]} />
-                <Bar dataKey="ponderado" fill="hsl(224, 67%, 33%)" name="ponderado" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="ponderado" fill="hsl(224, 67%, 33%)" name="ponderado" radius={[0, 4, 4, 0]}>
+                  <ErrorBar dataKey="ci" width={4} strokeWidth={1.5} stroke="hsl(346, 58%, 58%)" />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -354,7 +375,12 @@ function QuestionResultCard({ result, moe }: { result: QuestionResult; moe: numb
                 </span>
                 <span className="text-muted-foreground">
                   {(result.weighted_pcts[o.id] || 0).toFixed(1)}%
-                  <span className="text-xs ml-1">({result.raw_counts[o.id] || 0})</span>
+                  <span className="text-xs ml-1">
+                    ±{(() => {
+                      const p = (result.weighted_pcts[o.id] || 0) / 100;
+                      return effectiveN > 0 ? (1.96 * Math.sqrt((p * (1 - p)) / effectiveN) * 100).toFixed(1) : "—";
+                    })()}pp ({result.raw_counts[o.id] || 0})
+                  </span>
                 </span>
               </div>
             ))}
