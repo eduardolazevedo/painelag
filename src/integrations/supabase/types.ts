@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       demographic_weights: {
         Row: {
           category: string
@@ -267,6 +297,50 @@ export type Database = {
           },
         ]
       }
+      survey_quotas: {
+        Row: {
+          category: string
+          created_at: string
+          current_count: number
+          dimension: string
+          id: string
+          is_closed: boolean
+          survey_id: string
+          target_count: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          current_count?: number
+          dimension: string
+          id?: string
+          is_closed?: boolean
+          survey_id: string
+          target_count: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          current_count?: number
+          dimension?: string
+          id?: string
+          is_closed?: boolean
+          survey_id?: string
+          target_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_quotas_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       survey_suggestions: {
         Row: {
           category: string | null
@@ -382,6 +456,19 @@ export type Database = {
       }
       calculate_response_quality: {
         Args: { p_response_id: string }
+        Returns: Json
+      }
+      check_and_update_quota: {
+        Args: { p_survey_id: string; p_user_id: string }
+        Returns: Json
+      }
+      cross_tabulate: {
+        Args: {
+          p_dimension: string
+          p_question_id: string
+          p_survey_id: string
+          p_weights?: Json
+        }
         Returns: Json
       }
       has_role: {
