@@ -360,7 +360,9 @@ function QuestionResultCard({ result, moe, effectiveN }: { result: QuestionResul
                   labelFormatter={(label: string, payload: any[]) => payload?.[0]?.payload?.fullName || label}
                 />
                 <Bar dataKey="bruto" fill="hsl(224, 60%, 50%)" opacity={0.4} name="bruto" radius={[0, 2, 2, 0]} />
-                <Bar dataKey="ponderado" fill="hsl(224, 67%, 33%)" name="ponderado" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="ponderado" fill="hsl(224, 67%, 33%)" name="ponderado" radius={[0, 4, 4, 0]}>
+                  <ErrorBar dataKey="ci" width={4} strokeWidth={1.5} stroke="hsl(346, 58%, 58%)" />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
