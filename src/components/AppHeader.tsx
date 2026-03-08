@@ -1,6 +1,6 @@
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { LogOut, BarChart3, MessageSquarePlus, LayoutDashboard, Activity, Shield, TrendingUp, Layout } from "lucide-react";
+import { LogOut, BarChart3, MessageSquarePlus, LayoutDashboard, Activity, Shield, TrendingUp, Layout, CalendarClock } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AppHeader() {
@@ -15,6 +15,7 @@ export default function AppHeader() {
     { path: "/campo", label: "Campo", icon: Activity },
     { path: "/analise", label: "Análise", icon: TrendingUp },
     { path: "/admin", label: "Admin", icon: Shield },
+    { path: "/templates", label: "Templates", icon: CalendarClock },
     { path: "/widgets", label: "Widgets", icon: Layout },
   ];
 
