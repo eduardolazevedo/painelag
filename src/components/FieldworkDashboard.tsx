@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Users, Clock, TrendingUp, AlertTriangle, CheckCircle2, BarChart3, RefreshCw } from "lucide-react";
+import { Loader2, Users, Clock, TrendingUp, AlertTriangle, CheckCircle2, BarChart3, RefreshCw, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 
 interface SurveyFieldwork {
