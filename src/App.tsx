@@ -17,6 +17,7 @@ import FieldworkPage from "./pages/FieldworkPage";
 import AdminPage from "./pages/AdminPage";
 import WeightedResultsPage from "./pages/WeightedResultsPage";
 import WidgetDemoPage from "./pages/WidgetDemoPage";
+import TemplatesPage from "./pages/TemplatesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
