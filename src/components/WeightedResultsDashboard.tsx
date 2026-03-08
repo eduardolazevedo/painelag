@@ -278,7 +278,17 @@ export default function WeightedResultsDashboard() {
 
           {/* Question results */}
           {results.map(r => (
-            <QuestionResultCard key={r.question_id} result={r} moe={weighting.margin_of_error_95} />
+            <div key={r.question_id} className="space-y-2">
+              <QuestionResultCard result={r} moe={weighting.margin_of_error_95} effectiveN={weighting.effective_n} />
+              {r.question_type === "multiple_choice_single" && (
+                <CrossTabulation
+                  surveyId={selectedSurveyId}
+                  questionId={r.question_id}
+                  questionText={r.question_text}
+                  weights={weighting.weights}
+                />
+              )}
+            </div>
           ))}
         </>
       )}
